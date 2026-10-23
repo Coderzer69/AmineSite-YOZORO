@@ -1,57 +1,153 @@
-# 🌸 YOZORO — Anime Discovery & Streaming UI
+# 🌸 YOZORO — Anime Streaming Platform
 
 <p align="center">
-  <strong>Discover your next favorite anime.</strong><br/>
-  Browse seasonal picks, explore titles, check episode schedules, and enjoy an anime-inspired viewing experience.
+  <strong>Discover anime. Find your next favorite. Keep watching.</strong><br/>
+  A modern anime discovery and streaming platform designed for fans.
 </p>
 
 <p align="center">
-  <a href="https://amine-site-yozoro.vercel.app/"><strong>🌐 Live Demo</strong></a> ·
-  <a href="https://github.com/Coderzer69/AmineSite-YOZORO"><strong>📦 Source Code</strong></a>
+  <a href="https://amine-site-yozoro.vercel.app/"><strong>🌐 Live Website</strong></a> ·
+  <a href="https://github.com/Coderzer69/AmineSite-YOZORO"><strong>📦 GitHub Repository</strong></a>
+</p>
+
+<p align="center">
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-14-black?logo=next.js" />
+  <img alt="React" src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" />
+  <img alt="Project status" src="https://img.shields.io/badge/Status-In%20Development-orange" />
 </p>
 
 ---
 
-## ✨ About the Project
+## 📖 About YOZORO
 
-**YOZORO** is a modern anime discovery website built with **Next.js, React, TypeScript, and Tailwind CSS**. It brings together an immersive home page, searchable anime catalogue, detailed title pages, episode viewing routes, and a weekly schedule in one responsive interface.
+**YOZORO** is a modern anime platform designed to bring anime discovery, episode playback, and personalized viewing into one place. The goal is to deliver a polished experience where viewers can explore titles, search and filter the catalogue, view episode details, stream authorized content, manage a watchlist, and track their progress.
 
-The project currently uses **local mock data** through a dedicated data-access layer, making it easy to replace with a real anime API or backend in the future.
+The current frontend is built with **Next.js, React, TypeScript, and Tailwind CSS**. The full-stack release is intended to connect this interface to a backend API, persistent database, authentication, and a licensed video delivery provider.
 
-## 🚀 Features
+> **Development status:** This README documents the target full-stack product. The repository's current data layer includes mock data. Backend, database, account, and real streaming capabilities should only be described as live once implemented and tested.
 
-- **Anime discovery** — spotlight, trending, popular, top-rated, and currently airing sections.
-- **Browse & filter** — explore the catalogue and filter by genre, year, season, type, and airing status.
-- **Search** — find anime by title, with responsive search interactions.
-- **Anime details** — view title information, genres, status, recommendations, and episode lists.
-- **Watch interface** — dedicated routes for anime episodes.
-- **Weekly schedule** — browse scheduled anime by day.
-- **Watchlist UI** — save and revisit titles through the watchlist interaction.
-- **Community UI** — episode comment section for discussion.
-- **Responsive experience** — layouts designed for desktop and smaller screens.
-- **Polished interactions** — animations, carousels, loading states, and reusable UI components.
-- **Maintainable structure** — typed data models and a separate API/data layer.
+## ✨ Features
 
-> **Note:** Anime data, schedules, episodes, and comments are currently mocked in the project. The watch page provides a viewing interface; availability of actual video streams depends on the configured content source. Authentication and persistent user data should be treated as UI/demo functionality unless separately connected to a backend.
+### 🔎 Anime Discovery
+- Featured and trending anime sections.
+- Browse anime by genre, year, season, type, and status.
+- Search titles by name.
+- Anime detail pages with synopsis, metadata, genres, and recommendations.
+- Pagination and curated catalogue sections.
 
-## 🧰 Tech Stack
+### ▶️ Streaming Experience
+- Dedicated episode viewing pages.
+- Playback controls supported by the selected player.
+- Episode list and next/previous episode navigation.
+- Subtitle and audio-track selection when supported by the media source.
+- Continue watching and saved playback progress for signed-in users.
+- Adaptive quality when supported by the streaming provider.
+- Secure playback access for authorized video content.
 
+### 👤 User Accounts
+- Sign up, sign in, sign out, and profile management.
+- Personal watchlist.
+- Viewing history and continue-watching list.
+- Persistent playback progress and preferences.
+- Secure sessions and server-side authorization.
+
+### 💬 Community
+- Episode-specific comments.
+- Comment editing and deletion by the author.
+- Reactions and reporting, if enabled.
+- Moderation tools for community safety.
+
+### 🛠️ Admin Management
+- Protected admin dashboard.
+- Manage anime titles, seasons, episodes, metadata, and artwork.
+- Configure authorized media sources and subtitle tracks.
+- Moderate comments and user reports.
+- Role-based access controls.
+
+*Features listed here describe the intended complete platform and depend on the final backend and service integrations.*
+
+## 🧰 Technology Stack
+
+### Current Frontend
 | Technology | Purpose |
 | --- | --- |
-| [Next.js](https://nextjs.org/) 14 | React framework and file-based routing |
-| [React](https://react.dev/) 18 | Component-based UI |
-| [TypeScript](https://www.typescriptlang.org/) | Type-safe application code |
-| [Tailwind CSS](https://tailwindcss.com/) | Utility-first styling |
-| [Framer Motion](https://www.framer.com/motion/) | UI animation |
-| [GSAP](https://gsap.com/) | Motion and animation utilities |
-| [Swiper](https://swiperjs.com/) | Interactive sliders and carousels |
+| [Next.js 14](https://nextjs.org/) | React framework and routing |
+| [React 18](https://react.dev/) | Component-based user interface |
+| [TypeScript](https://www.typescriptlang.org/) | Type safety |
+| [Tailwind CSS](https://tailwindcss.com/) | Responsive styling |
+| [Framer Motion](https://www.framer.com/motion/) | UI animations |
+| [GSAP](https://gsap.com/) | Motion effects |
+| [Swiper](https://swiperjs.com/) | Sliders and carousels |
 | [Lucide React](https://lucide.dev/) | Icons |
 
-## 🖥️ Getting Started
+### Suggested Full-Stack Architecture
+The backend technologies below are recommendations, not claims about dependencies already present in this repository.
+
+| Layer | Example | Responsibility |
+| --- | --- | --- |
+| Backend API | Node.js + TypeScript + Express, or Next.js Route Handlers | Business logic and API endpoints |
+| Database | PostgreSQL | Users, anime, episodes, watchlists, comments, and progress |
+| ORM | Prisma or Drizzle | Typed database access and migrations |
+| Authentication | Secure server-managed sessions or an identity provider | Identity and access control |
+| Media delivery | Licensed streaming provider or storage + CDN | Video and subtitle delivery |
+| Image delivery | Image CDN or object storage | Posters, banners, and thumbnails |
+| Hosting | Vercel or another compatible host | Web app and API hosting |
+| Observability | Error tracking and structured logs | Diagnostics and reliability |
+
+## 🏗️ Architecture Overview
+
+```text
+Viewer
+  |
+  v
+Next.js Frontend
+  | HTTPS API requests
+  v
+Backend API
+  |--------------------------|
+  v                          v
+PostgreSQL              Media Provider / CDN
+(users, catalogue,      (authorized video,
+watchlists, progress,    subtitles, artwork)
+comments)
+```
+
+The backend should validate incoming requests, enforce permissions, and return only data the requester is allowed to access. Video should be delivered through an appropriate media provider/CDN rather than passing large video files through ordinary API endpoints unless the architecture specifically requires it.
+
+## 🗺️ Frontend Routes
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Home page and anime discovery |
+| `/browse` | Browse, search, and filter titles |
+| `/anime/[id]` | Anime details and recommendations |
+| `/schedule` | Weekly schedule |
+| `/watch/[id]/[ep]` | Episode viewing interface |
+
+## 🔌 Example Backend API Design
+
+These are proposed endpoint examples for the completed platform, not verified routes in the current codebase. Update this section to match the implemented API.
+
+| Method | Example endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/anime` | List and filter anime |
+| `GET` | `/api/anime/:id` | Get anime details |
+| `GET` | `/api/anime/:id/episodes` | List episodes |
+| `GET` | `/api/episodes/:id/playback` | Authorize playback and return playback details |
+| `GET` | `/api/me/watchlist` | Get the current user's watchlist |
+| `POST` | `/api/me/watchlist` | Add a title to the watchlist |
+| `DELETE` | `/api/me/watchlist/:animeId` | Remove a title |
+| `PUT` | `/api/me/progress/:episodeId` | Save viewing progress |
+| `GET` | `/api/episodes/:id/comments` | List episode comments |
+| `POST` | `/api/episodes/:id/comments` | Create a comment |
+
+## 🚀 Getting Started
 
 ### Prerequisites
-
-Install **Node.js** (LTS recommended) and npm.
+- Node.js LTS
+- npm
+- Git
 
 ### 1. Clone the repository
 
@@ -66,90 +162,118 @@ cd AmineSite-YOZORO
 npm install
 ```
 
-### 3. Start the development server
+### 3. Run locally
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000).
 
-### 4. Create a production build
+### 4. Build for production
 
 ```bash
 npm run build
 npm run start
 ```
 
-The production server runs on port 3000 by default unless configured otherwise by the hosting platform.
+These commands are for the current frontend package. If the backend is in a separate directory or repository, install its dependencies and follow its own setup instructions too.
 
-## 📁 Project Structure
+## ⚙️ Environment Variables
 
-```text
-AmineSite-YOZORO/
-├── app/                    # Next.js routes, layouts, and global styles
-│   ├── anime/[id]/         # Anime detail page
-│   ├── browse/             # Browse and filter catalogue
-│   ├── schedule/           # Weekly anime schedule
-│   ├── watch/[id]/[ep]/    # Episode viewing route
-│   ├── layout.tsx          # Root layout
-│   └── page.tsx            # Home page
-├── components/             # Reusable UI components
-├── hooks/                  # Custom React hooks
-├── lib/
-│   ├── api.ts              # Anime data access functions
-│   ├── mock-data.ts        # Demo catalogue data
-│   ├── types.ts            # Shared TypeScript types
-│   ├── art.ts              # Artwork helpers
-│   └── utils.ts             # Utility functions
-├── public/                 # Static assets (if added)
-├── package.json
-└── README.md
+For a frontend that calls a separately hosted API, an example `.env.local` may look like this:
+
+```dotenv
+# Example only; use the variable name supported by your implementation
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
 ```
 
-## 🧭 Main Pages
+Backend configuration may require a database URL, session/authentication secrets, media-provider credentials, object-storage credentials, and allowed frontend origins. Add only variables required by the services actually selected for the project.
 
-| Route | Description |
-| --- | --- |
-| `/` | Home page and anime discovery |
-| `/browse` | Browse, search, and filter titles |
-| `/anime/[id]` | Anime details and recommendations |
-| `/schedule` | Weekly airing schedule |
-| `/watch/[id]/[ep]` | Episode viewing interface |
+**Security checklist**
+- Never commit `.env` files, passwords, tokens, private keys, or database credentials.
+- Only expose a `NEXT_PUBLIC_*` value if it is safe for every browser visitor to see.
+- Validate environment variables at startup.
+- Use separate credentials for development and production.
+- Rotate any secret that is accidentally exposed.
 
-## 🛠️ Available Scripts
+## 🗄️ Suggested Data Model
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the local development server |
-| `npm run build` | Build the application for production |
-| `npm run start` | Start the production server |
-| `npm run lint` | Run the configured Next.js lint command |
+A production database may include the following entities:
 
-## 🌱 Future Improvements
+- **User:** account identity, role, and timestamps.
+- **Anime:** titles, synopsis, artwork, genres, year, season, and status.
+- **Episode:** anime relationship, episode number, title, duration, and release information.
+- **MediaAsset:** provider reference, subtitle/audio metadata, and access configuration.
+- **WatchlistItem:** user-to-anime relationship.
+- **WatchProgress:** user, episode, playback position, and last-watched time.
+- **Comment:** author, episode, content, moderation state, and timestamps.
+- **Report:** user-submitted moderation reports and resolution status.
 
-- Connect a live anime API for current catalogue and season data.
-- Add secure authentication and persistent watchlists.
-- Store comments and user preferences in a database.
-- Integrate a reliable, licensed video provider for episode playback.
-- Add automated tests, accessibility checks, and performance monitoring.
+Use database constraints, indexes, migrations, and server-side validation. Never return private provider credentials or signing keys to the browser.
+
+## 🚢 Production Deployment Checklist
+
+- [ ] Deploy the frontend and backend to the selected hosting providers.
+- [ ] Configure production environment variables and secret storage.
+- [ ] Provision the database and apply migrations.
+- [ ] Implement and test authentication and protected routes.
+- [ ] Connect a licensed video streaming provider.
+- [ ] Configure artwork, subtitles, and playback error handling.
+- [ ] Protect playback URLs with authorization or expiring signatures where supported.
+- [ ] Configure HTTPS, CORS, request validation, and rate limiting.
+- [ ] Set up database backups, health checks, structured logs, and error monitoring.
+- [ ] Test mobile layouts, accessibility, performance, and slow network conditions.
+- [ ] Verify all streamed content is legally authorized for distribution.
+
+## 🔐 Security & Content Responsibility
+
+- Use HTTPS for all production traffic.
+- If managing passwords directly, use a suitable password-hashing algorithm; never store plaintext passwords.
+- Use secure, HTTP-only cookies for server-managed sessions where appropriate.
+- Authorize every private and administrative operation on the server.
+- Rate-limit sensitive endpoints and protect comments against spam and abuse.
+- Keep provider tokens and signing secrets on the server.
+- Avoid logging credentials, tokens, or sensitive user data.
+- Stream only content that the platform has permission to distribute.
+
+## 🧪 Testing Recommendations
+
+Before launch, test:
+- Catalogue search, filters, and pagination.
+- Authentication, session expiration, and access permissions.
+- Watchlist and viewing-progress persistence.
+- Playback authorization and media failures.
+- Comment validation, reporting, and moderation.
+- API validation, database constraints, and error responses.
+- Responsive layouts, accessibility, and keyboard navigation.
+
+## 🛣️ Roadmap
+
+- [ ] Replace mock catalogue data with a real metadata source.
+- [ ] Build the backend API and database schema.
+- [ ] Add secure authentication and user profiles.
+- [ ] Persist watchlists and playback progress.
+- [ ] Integrate an authorized streaming provider and subtitle support.
+- [ ] Persist episode comments and add moderation.
+- [ ] Build admin tools for catalogue and episode management.
+- [ ] Add automated tests, monitoring, backups, and production hardening.
 
 ## 🤝 Contributing
 
-Contributions, suggestions, and bug reports are welcome.
-
 1. Fork the repository.
-2. Create a feature branch: `git checkout -b feat/your-feature`
-3. Commit your changes: `git commit -m "feat: add your feature"`
-4. Push the branch: `git push origin feat/your-feature`
-5. Open a pull request.
+2. Create a branch: `git checkout -b feat/your-feature`
+3. Commit your changes: `git commit -m "feat: describe your change"`
+4. Push your branch: `git push origin feat/your-feature`
+5. Open a pull request with a clear summary and testing notes.
 
 ## 📄 License
 
-No license file is currently specified in this repository. Unless a license is added, reuse and redistribution are not automatically permitted.
+No license file is currently specified in this repository. Add a license before granting others permission to use, modify, or redistribute the project.
 
 ---
 
 <p align="center">
-  Made with ☕ and a love for anime.
+  <strong>YOZORO</strong><br/>
+  Made for anime fans. Built for discovery.
 </p>
