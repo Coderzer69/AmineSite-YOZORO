@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --accent: #ff4d6d;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-ink-950 font-sans text-mist-100 antialiased;
+    background-image:
+      radial-gradient(60rem 30rem at 85% -10%, rgba(255, 77, 109, 0.09), transparent 60%),
+      radial-gradient(50rem 30rem at -10% 20%, rgba(90, 80, 200, 0.08), transparent 60%);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-ink-950;
+  }
+  ::selection {
+    background: rgba(255, 77, 109, 0.35);
+  }
+  /* slim scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #2b2b42 transparent;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10;
+  }
+  .glass {
+    @apply border border-white/10 bg-ink-900/60 backdrop-blur-xl backdrop-saturate-150;
+  }
+  .skeleton {
+    @apply animate-shimmer rounded-lg bg-[length:200%_100%];
+    background-image: linear-gradient(90deg, #161624 25%, #232338 50%, #161624 75%);
+  }
+  .chip {
+    @apply inline-flex items-center rounded-md bg-white/10 px-2 py-0.5 text-xs font-medium text-mist-100;
+  }
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-white transition duration-300 ease-smooth hover:bg-accent-deep hover:shadow-glow;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-mist-100 transition duration-300 ease-smooth hover:border-white/30 hover:bg-white/10;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.swiper-wrapper {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
