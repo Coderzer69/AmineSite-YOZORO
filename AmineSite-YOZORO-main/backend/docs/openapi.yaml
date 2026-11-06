@@ -1,0 +1,174 @@
+openapi: 3.0.3
+info:
+  title: YOZORO Anime Streaming Backend API
+  version: 1.0.0
+  description: High-performance, secure, production-grade backend API for YOZORO anime streaming platform.
+servers:
+  - url: http://localhost:4000/api/v1
+    description: Local Development Server
+  - url: https://api.yozoro.moe/api/v1
+    description: Production Server
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Service health status
+
+  /auth/login:
+    post:
+      summary: Authenticate user and create session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+      responses:
+        "200":
+          description: Logged in successfully, sets yozoro_session cookie
+        "401":
+          description: Invalid credentials
+
+  /auth/register:
+    post:
+      summary: Register account with invitation code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, email, password, invitationCode]
+              properties:
+                username: { type: string, minLength: 3 }
+                email: { type: string, format: email }
+                password: { type: string, minLength: 8 }
+                invitationCode: { type: string }
+      responses:
+        "201":
+          description: Account created, sets yozoro_session cookie
+
+  /auth/logout:
+    post:
+      summary: Invalidate current user session
+      responses:
+        "200":
+          description: Logged out successfully
+
+  /auth/me:
+    get:
+      summary: Get currently authenticated user profile
+      responses:
+        "200":
+          description: Authenticated user profile
+        "401":
+          description: Unauthenticated
+
+  /anime/spotlight:
+    get:
+      summary: Get top 5 spotlight anime titles
+      responses:
+        "200":
+          description: Array of Anime objects
+
+  /anime/trending:
+    get:
+      summary: Get currently trending anime titles
+      responses:
+        "200":
+          description: Array of Anime objects
+
+  /anime/recent:
+    get:
+      summary: Get recently updated airing anime titles
+      responses:
+        "200":
+          description: Array of Anime objects
+
+  /anime/genres:
+    get:
+      summary: Get list of active anime genres
+      responses:
+        "200":
+          description: Array of genre strings
+
+  /anime/browse:
+    get:
+      summary: Filtered and paginated anime search
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string }
+        - name: genre
+          in: query
+          schema: { type: string }
+        - name: year
+          in: query
+          schema: { type: integer }
+        - name: season
+          in: query
+          schema: { type: string, enum: [Winter, Spring, Summer, Fall] }
+        - name: type
+          in: query
+          schema: { type: string, enum: [TV, Movie, OVA, ONA] }
+        - name: status
+          in: query
+          schema: { type: string, enum: [Airing, Completed, Upcoming] }
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+      responses:
+        "200":
+          description: BrowseResult with items, total, pages, page
+
+  /anime/{id}:
+    get:
+      summary: Get single anime details by slug ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Anime details
+        "404":
+          description: Anime not found
+
+  /anime/{id}/episodes:
+    get:
+      summary: Get list of published episodes for an anime
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Array of Episode objects
+
+  /playback/{animeId}/{ep}/manifest:
+    get:
+      summary: Get authorized streaming manifest for episode
+      parameters:
+        - name: animeId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: ep
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Manifest containing streamUrl, subtitles, servers
+        "403":
+          description: Episode unpublished or unauthorized
+

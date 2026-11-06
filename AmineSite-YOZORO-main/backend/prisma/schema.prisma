@@ -1,0 +1,355 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ----------------------------------------------------
+// ENUMS
+// ----------------------------------------------------
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum AnimeType {
+  TV
+  Movie
+  OVA
+  ONA
+}
+
+enum AnimeStatus {
+  Airing
+  Completed
+  Upcoming
+}
+
+enum BroadcastSeason {
+  Winter
+  Spring
+  Summer
+  Fall
+}
+
+enum JobStatus {
+  PENDING_UPLOAD
+  UPLOADING
+  UPLOADED
+  QUEUED
+  PROCESSING
+  VALIDATING
+  READY
+  PUBLISHED
+  FAILED
+}
+
+enum UploadStatus {
+  INITIALIZED
+  UPLOADING
+  COMPLETED
+  VERIFIED
+  FAILED
+}
+
+enum VideoStatus {
+  PROCESSING
+  READY
+  FAILED
+}
+
+enum ReactionType {
+  LIKE
+}
+
+// ----------------------------------------------------
+// MODELS
+// ----------------------------------------------------
+
+model User {
+  id           String     @id @default(uuid())
+  username     String     @unique
+  email        String     @unique
+  passwordHash String
+  role         Role       @default(USER)
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  sessions         Session[]
+  invitationsSent  Invitation[]      @relation("InvitedBy")
+  invitationUsed   Invitation?       @relation("UsedBy")
+  watchProgress    WatchProgress[]
+  watchlist        Watchlist[]
+  comments         Comment[]
+  commentReactions CommentReaction[]
+
+  @@index([email])
+  @@index([username])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress String?
+  userAgent String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([tokenHash])
+}
+
+model Invitation {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  createdById String
+  createdBy   User      @relation("InvitedBy", fields: [createdById], references: [id], onDelete: Cascade)
+  usedById    String?   @unique
+  usedBy      User?     @relation("UsedBy", fields: [usedById], references: [id], onDelete: SetNull)
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([code])
+}
+
+model Anime {
+  id        String          @id // slug e.g. "ashen-lantern"
+  title     String
+  japanese  String
+  synopsis  String          @db.Text
+  type      AnimeType       @default(TV)
+  status    AnimeStatus     @default(Airing)
+  year      Int
+  season    BroadcastSeason @default(Fall)
+  episodes  Int             @default(0) // total planned
+  aired     Int             @default(0) // aired so far
+  duration  String          @default("24 min")
+  rating    Float           @default(0.0)
+  studio    String          @default("Unknown")
+  hue       Int             @default(200)
+  poster    String          @db.Text
+  banner    String          @db.Text
+  anilistId Int?            @unique
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  genres          AnimeGenre[]
+  seasons         Season[]
+  episodesList    Episode[]
+  contentLicenses ContentLicense[]
+  watchProgress   WatchProgress[]
+  watchlistedBy   Watchlist[]
+  comments        Comment[]
+
+  @@index([status])
+  @@index([rating])
+  @@index([year, season])
+}
+
+model Genre {
+  id   String       @id @default(uuid())
+  name String       @unique
+  slug String       @unique
+  animes AnimeGenre[]
+
+  @@index([name])
+}
+
+model AnimeGenre {
+  animeId String
+  genreId String
+  anime   Anime  @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  genre   Genre  @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@id([animeId, genreId])
+  @@index([genreId])
+}
+
+model Season {
+  id           String    @id @default(uuid())
+  animeId      String
+  anime        Anime     @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  seasonNumber Int       @default(1)
+  title        String    @default("Season 1")
+  year         Int?
+  createdAt    DateTime  @default(now())
+  episodes     Episode[]
+
+  @@unique([animeId, seasonNumber])
+}
+
+model Episode {
+  id          String   @id @default(uuid())
+  animeId     String
+  anime       Anime    @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  seasonId    String?
+  season      Season?  @relation(fields: [seasonId], references: [id], onDelete: SetNull)
+  number      Int
+  title       String
+  duration    String   @default("24 min")
+  airDate     DateTime?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  videoAsset     VideoAsset?
+  subtitles      SubtitleTrack[]
+  uploadAssets   UploadAsset[]
+  transcodeJobs  TranscodeJob[]
+
+  @@unique([animeId, number])
+  @@index([animeId])
+}
+
+model VideoAsset {
+  id               String      @id @default(uuid())
+  episodeId        String      @unique
+  episode          Episode     @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  masterPlaylistKey String
+  durationSeconds  Float       @default(0.0)
+  resolution       String      @default("1080p")
+  bitrate          Int         @default(0)
+  videoCodec       String      @default("h264")
+  audioCodec       String      @default("aac")
+  status           VideoStatus @default(PROCESSING)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model SubtitleTrack {
+  id        String   @id @default(uuid())
+  episodeId String
+  episode   Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  language  String   @default("en")
+  label     String   @default("English")
+  fileKey   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([episodeId])
+}
+
+model UploadAsset {
+  id             String       @id @default(uuid())
+  episodeId      String
+  episode        Episode      @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  gcsObjectName  String
+  originalFilename String
+  fileSize       BigInt       @default(0)
+  checksumSha256 String?
+  status         UploadStatus @default(INITIALIZED)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  transcodeJobs  TranscodeJob[]
+
+  @@index([episodeId])
+}
+
+model TranscodeJob {
+  id              String       @id @default(uuid())
+  uploadAssetId   String?
+  uploadAsset     UploadAsset? @relation(fields: [uploadAssetId], references: [id], onDelete: SetNull)
+  episodeId       String
+  episode         Episode      @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  status          JobStatus    @default(PENDING_UPLOAD)
+  attempts        Int          @default(0)
+  maxAttempts     Int          @default(3)
+  progressPercent Int          @default(0)
+  errorLog        String?      @db.Text
+  workerId        String?
+  lockedAt        DateTime?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([status])
+  @@index([workerId])
+}
+
+model ContentLicense {
+  id          String    @id @default(uuid())
+  animeId     String
+  anime       Anime     @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  licensor    String
+  licenseType String    @default("Exclusive Streaming")
+  territory   String    @default("Worldwide")
+  validFrom   DateTime
+  validTo     DateTime?
+  notes       String?   @db.Text
+  createdAt   DateTime  @default(now())
+
+  @@index([animeId])
+}
+
+model WatchProgress {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  animeId         String
+  anime           Anime    @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  episodeNumber   Int
+  positionSeconds Float    @default(0.0)
+  durationSeconds Float    @default(0.0)
+  isCompleted     Boolean  @default(false)
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, animeId, episodeNumber])
+  @@index([userId])
+}
+
+model Watchlist {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  animeId   String
+  anime     Anime    @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, animeId])
+  @@index([userId])
+}
+
+model Comment {
+  id            String            @id @default(uuid())
+  userId        String
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  animeId       String
+  anime         Anime             @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  episodeNumber Int
+  text          String            @db.VarChar(500)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  reactions     CommentReaction[]
+
+  @@index([animeId, episodeNumber])
+  @@index([userId])
+}
+
+model CommentReaction {
+  id           String       @id @default(uuid())
+  commentId    String
+  comment      Comment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reactionType ReactionType @default(LIKE)
+  createdAt    DateTime     @default(now())
+
+  @@unique([commentId, userId])
+  @@index([commentId])
+}
+
